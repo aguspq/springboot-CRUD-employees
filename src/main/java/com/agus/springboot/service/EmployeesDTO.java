@@ -1,18 +1,16 @@
 package com.agus.springboot.service;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 public class EmployeesDTO {
     private Integer empno;
-    @NotEmpty(message = "The field: 'ename' can't be blank")
-    @Size(max = 50, message = "Name size must be under 50")
+    @NotBlank(message = "The field: 'ename' can't be blank")
+    @Size(max = 50, message = "Name size must be under 50 characters")
     private String name;
-    @NotNull
+    @NotBlank (message = "The field 'job' can't be blank")
     private String job;
+    @NotNull
     @Min(1)
     private Integer deptno;
     private String deptName;

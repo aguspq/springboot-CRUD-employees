@@ -29,8 +29,8 @@ public class EmployeeService {
             throw new ResourceNotFoundException("You can't pass an ID to create");
 
 //         Fast Fail, to force Spring to throw MY exception
-        if(dto.getDeptno() == null)
-            throw new ResourceNotFoundException("Department ID is mandatory to create an employee");
+//        if(dto.getDeptno() == null)
+//            throw new ResourceNotFoundException("Department ID is mandatory to create an employee");
 
         Optional<DeptEntity> dept = deptDAO.findById(dto.getDeptno());
         if (dept.isEmpty()) {
@@ -90,17 +90,13 @@ public class EmployeeService {
 
     }
 
-    public boolean deleteUser(int id){
-        boolean deleted = false; // not found
-
+    public void deleteUser(int id){
         boolean exists = employeeDAO.existsById(id);
 
         if(exists){
             employeeDAO.deleteById(id);
-            deleted = true; // found
         } else
             throw new ResourceNotFoundException("Employee not found with ID: " + id);
-        return deleted;
     }
 
     public EmployeesDTO updateEmployee(int id, EmployeesDTO dtoUpdated){

@@ -46,11 +46,6 @@ public class DepartmentService {
         if(dept.getDeptNo() != null)
             throw new ResourceNotFoundException("You can't pass an ID to create");
 
-        if(dept.getName() == null || dept.getName().isEmpty() || dept.getLocation() == null || dept.getLocation().isEmpty())
-            throw new ResourceNotFoundException("Complete all fields to create the department\n" +
-                    "Name: " + dept.getName() +
-                    "\nLocation: " + dept.getLocation());
-
         DeptEntity deptEntity = new DeptEntity();
         deptEntity.setDname(dept.getName());
         deptEntity.setLoc(dept.getLocation());

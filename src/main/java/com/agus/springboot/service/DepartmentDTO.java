@@ -1,15 +1,17 @@
 package com.agus.springboot.service;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class DepartmentDTO {
     private Integer deptNo;
-    @NotEmpty(message = "The field 'name' can't be empty")
-    @Size(max = 50, message = "Name size must be under 50")
+//    check @Valid (in controller) to use annotations
+    @NotBlank(message = "The field 'name' is mandatory")
+    @Size(max = 50, message = "Name size must be under 50 characters")
     private String name;
-    @NotNull
+    @NotBlank(message = "The field 'location' is mandatory")
     private String location;
 
     public DepartmentDTO(){

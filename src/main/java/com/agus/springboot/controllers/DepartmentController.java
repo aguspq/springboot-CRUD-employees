@@ -5,10 +5,10 @@ import com.agus.springboot.model.entities.DeptEntity;
 import com.agus.springboot.service.DepartmentDTO;
 import com.agus.springboot.service.DepartmentService;
 import com.agus.springboot.service.EmployeesDTO;
+import jakarta.validation.Valid;
 import org.apache.coyote.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,16 +32,14 @@ public class DepartmentController {
     }
 
     @PostMapping // CREATE
-    public ResponseEntity<?> saveDept (@Validated @RequestBody DepartmentDTO dept){
+    public ResponseEntity<DepartmentDTO> saveDept (@Valid @RequestBody DepartmentDTO dept){
         DepartmentDTO newDept = deptService.saveDept(dept);
 
         return ResponseEntity.ok().body(newDept);
     }
 
-//    public void deleteDept (@Validated @RequestBody DeptEntity dept){ deptDAO.delete(dept);}
-
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateDepartment(@RequestBody DepartmentDTO newDept,
+    @PutMapping("/{id}") // we don't use @Valid to allow partial updates
+    public ResponseEntity<DepartmentDTO> updateDepartment(@RequestBody DepartmentDTO newDept,
                                               @PathVariable(value = "id") int id){
         DepartmentDTO dept = deptService.updateDepartment(id, newDept);
 
@@ -49,7 +47,7 @@ public class DepartmentController {
     }
 
     @DeleteMapping ("/{id}")
-    public ResponseEntity<?> deleteDept(@PathVariable(value = "id") int id){
+    public ResponseEntity<Void> deleteDept(@PathVariable(value = "id") int id){
         deptService.deleteDept(id);
 
         return ResponseEntity.noContent().build();
