@@ -2,6 +2,7 @@ package com.agus.springboot.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+//import jdk.incubator.foreign.SymbolLookup;
 
 import java.util.Objects;
 import java.util.Set;
@@ -13,12 +14,12 @@ public class DeptEntity {
     @Id
     @Column(name = "deptno")
     private Integer deptno;
-    @Basic
     @Column(name = "dname")
     private String dname;
-    @Basic
     @Column(name = "loc")
     private String loc;
+    @Column(name = "isactive")
+    private Boolean isActive = true;
 
     @OneToMany(mappedBy = "dept")
     @JsonManagedReference
@@ -51,6 +52,8 @@ public class DeptEntity {
     public Set<EmployeeEntity> getEmployees() { return employees; }
 
     public void setEmployees (Set<EmployeeEntity> employees) { this.employees = employees; }
+    public Boolean getIsActive() { return isActive; }
+    public void setIsActive(Boolean isActive) { this.isActive = isActive; }
 
     @Override
     public boolean equals(Object o) {

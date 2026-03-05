@@ -21,12 +21,10 @@ public class DepartmentService {
 
     public List<DepartmentDTO> findAllDepartments(){
         List<DeptEntity> deptEntityList = (List<DeptEntity>)deptDAO.findAll();
-        List<DepartmentDTO> dtoList = new ArrayList<>();
-
-        for(DeptEntity dept : deptEntityList){
-            dtoList.add(convertEntityToDTO(dept));
-        }
-        return dtoList;
+        return deptEntityList.stream()
+                .filter(dept -> dept.getIsActive())
+                .map(this::convertEntityToDTO)
+                .toList();
 
     }
 
@@ -39,14 +37,7 @@ public class DepartmentService {
         if(dept.getEmployees() != null){
 ////            Entity List
             List<EmployeeEntity> employees = new ArrayList<>(dept.getEmployees());
-////            DTO List
-//            List<EmployeesDTO> employeesDTOList = new ArrayList<>();
-//
-//            for (EmployeeEntity empl : employees){
-//                employeesDTOList.add(convertEmplEntityToDTO(empl));
-//            }
-//
-//            dto.setEmployeesDTOList(employeesDTOList);
+
             dto.setEmployeesDTOList(employees.stream()
                     .map(this::convertEmplEntityToDTO)
                     .toList());
@@ -71,10 +62,10 @@ public class DepartmentService {
     }
 
     public DepartmentDTO findDeptById(int id){
-        Optional<DeptEntity> dept = deptDAO.findById(id);
-//        return dept.map(d -> convertEntityToDTO(d)).orElse(null);
-//        same but shorter
-        return dept.map(this::convertEntityToDTO).orElseThrow(() -> new ResourceNotFoundException("Department not found with ID: " + id));
+        return deptDAO.findById(id)
+                .filter(DeptEntity::getIsActive)
+                .map(this::convertEntityToDTO)
+                .orElseThrow(()-> new ResourceNotFoundException("Department not found or is inactive with ID: " + id));
     }
 
     public DepartmentDTO saveDept(DepartmentDTO dept){
@@ -92,16 +83,17 @@ public class DepartmentService {
     }
 
     public void deleteDept(int id){
-        Optional<DeptEntity> dept = deptDAO.findById(id);
+        DeptEntity dept = deptDAO.findById(id)
+                .filter(DeptEntity::getIsActive)
+                .orElseThrow(() -> new ResourceNotFoundException("Dept with ID: " + id + " not found"));
 
-        if(dept.isPresent()){
-            deptDAO.deleteById(id);
-        } else
-            throw new ResourceNotFoundException("Department not found with ID: " + id);
+        dept.setIsActive(false);
+        deptDAO.save(dept);
     }
 
     public DepartmentDTO updateDepartment(int id, DepartmentDTO newDept){
         DeptEntity dept = deptDAO.findById(id)
+                .filter(DeptEntity::getIsActive)
                 .orElseThrow(() -> new ResourceNotFoundException("Dept with ID: " + id + " not found"));
 
         if(newDept.getName() != null)
